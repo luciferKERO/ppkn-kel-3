@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuis Interaktif Evaluasi PPKn | Bermedia Global</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/modules.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- NAVBAR -->
+    <nav class="navbar" aria-label="Navigasi Utama">
+      <div class="container nav-container">
+        <a href="index.html" class="brand-logo">
+          <span class="brand-flag"></span>
+          <span>BERMEDIA <span class="highlight">GLOBAL</span></span>
+          <span class="brand-badge">PPKn 2026</span>
+        </a>
+        <button class="mobile-toggle" aria-label="Menu" aria-expanded="false">☰</button>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Beranda</a></li>
+          <li><a href="materi/index.html" class="nav-link">Modul Pelajaran</a></li>
+          <li><a href="riset.html" class="nav-link">Data Riset</a></li>
+          <li><a href="survei.html" class="nav-link">Survei (N=44)</a></li>
+          <li><a href="teori.html" class="nav-link">Kerangka Teori</a></li>
+          <li><a href="kuis.html" class="nav-link nav-cta active">Kuis Interaktif</a></li>
+          <li><a href="pustaka.html" class="nav-link">Daftar Pustaka</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- HEADER -->
+    <section class="section" style="padding-top: 3rem; padding-bottom: 2rem;">
+      <div class="container">
+        <div class="section-badge">Evaluasi Belajar Interaktif</div>
+        <h1 class="section-title">Uji Pemahaman: Media Sosial &amp; Identitas Nasional</h1>
+        <p class="section-subtitle">
+          Uji pemahaman Anda terhadap konsep sosiologi komunikasi, data empiris multikampus, dan implementasi nilai Pancasila di era digital melalui 8 soal interaktif dengan pembahasan instan.
+        </p>
+
+        <!-- QUIZ CONTAINER -->
+        <div class="quiz-container" id="quiz-container" style="margin-top: 2.5rem;">
+          <!-- Injected via quiz.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom">
+          Bermedia Global, Beridentitas Nasional © 2026 · Platform Kuis Interaktif PPKn.
+        </div>
+      </div>
+    </footer>
+    <button id="back-to-top" class="back-to-top" aria-label="Kembali ke atas">↑</button>
+  </div>
+  <script src="js/main.js"></script>
+  <script src="js/quiz.js"></script>
+</body>
+</html>

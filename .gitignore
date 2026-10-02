@@ -1,0 +1,28 @@
+# OS & Editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Node / Build artifacts
+node_modules/
+dist/
+.vercel/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# Internal Agent Planning & MCP artifacts
+.planning/
+.codegraph/
+.playwright-mcp/
+
+# Temporary Local Screenshot / Scratch files
+screenshot_*.png
+poster_preview.png

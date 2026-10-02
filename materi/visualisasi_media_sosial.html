@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Visualisasi: Media Sosial & Identitas Nasional Generasi Muda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --surface: #131b2e;
+      --surface-card: #1a243b;
+      --border: #23314f;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent-red: #ef4444;
+      --accent-blue: #3b82f6;
+      --accent-teal: #06b6d4;
+      --accent-amber: #f59e0b;
+      --accent-emerald: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-pink: #ec4899;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(59, 130, 246, 0.05) 70%, transparent 100%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 800px;
+    }
+
+    /* Stats Row */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .kpi-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    /* Section Grid */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-red);
+      display: inline-block;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      margin-bottom: 1.25rem;
+    }
+
+    .card-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .card-header p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .chart-container {
+      position: relative;
+      flex: 1;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chart-container.large {
+      min-height: 420px;
+    }
+
+    /* Content pills */
+    .content-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 1rem;
+    }
+
+    .tag {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      color: #e2e8f0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tag .count {
+      font-size: 0.75rem;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    /* Data Table */
+    .table-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .table-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .search-input {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      outline: none;
+      width: 280px;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      max-height: 480px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+
+    th {
+      background: var(--surface-card);
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--text-muted);
+    }
+
+    tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .badge-setuju { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .badge-biasa { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .badge-tidak { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      padding: 1rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Laporan Survei & Analisis Data</div>
+      <h1>Media Sosial dan Identitas Nasional Generasi Muda</h1>
+      <p class="subtitle">Analisis pola konsumsi media sosial, ekspresi diri, persepsi budaya, dan penerapan nilai Pancasila pada generasi muda (N = 44 Responden).</p>
+    </header>
+
+    <!-- KPI STATS -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title">Total Responden</div>
+        <div class="kpi-value">44 <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">Orang</span></div>
+        <div class="kpi-sub">Mahasiswa & Pelajar</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Platform Utama</div>
+        <div class="kpi-value" style="color: #67e8f9;">TikTok <span style="font-size: 1rem; font-weight: 600; color: var(--accent-teal);">43.2%</span></div>
+        <div class="kpi-sub">Diikuti Instagram (36.4%)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Rentang Usia Dominan</div>
+        <div class="kpi-value" style="color: #a78bfa;">18-20 <span style="font-size: 0.9rem; font-weight: 500;">Tahun</span></div>
+        <div class="kpi-sub">61.4% dari total responden</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Screen Time Harian</div>
+        <div class="kpi-value" style="color: #fbbf24;">1 - 6 <span style="font-size: 0.9rem; font-weight: 500;">Jam/hari</span></div>
+        <div class="kpi-sub">79.5% responden aktif harian</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Pedoman Pancasila</div>
+        <div class="kpi-value" style="color: #34d399;">72.7% <span style="font-size: 0.9rem; font-weight: 500;">Setuju</span></div>
+        <div class="kpi-sub">0% Tidak Setuju</div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: DEMOGRAFI & KEBIASAAN -->
+    <div class="section-title"><span class="dot"></span> 1. Demografi & Profil Responden</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <h3>Distribusi Usia</h3>
+          <p>Mayoritas berusia 18-20 tahun</p>
+        </div>
+        <div class="chart-container">
+          <canvas id="chartUsia"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Jenis Kelamin</h3>
+          <p>Proporsi responden perempuan dan laki-laki</p>
+        </div>
+        <div class="chart-container">
+          <canvas id="chartGender"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Status Responden</h3>
+          <p>Latar belakang pendidikan & aktivitas</p>
+        </div>
+        <div class="chart-container">
+          <canvas id="chartStatus"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: POLA AKSES MEDSOS -->
+    <div class="section-title"><span class="dot"></span> 2. Perilaku & Pola Penggunaan Media Sosial</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <h3>Platform Paling Sering Digunakan</h3>
+          <p>Dominasi aplikasi media sosial harian</p>
+        </div>
+        <div class="chart-container">
+          <canvas id="chartPlatform"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Durasi Penggunaan Per Hari</h3>
+          <p>Intensitas waktu berselancar di media sosial</p>
+        </div>
+        <div class="chart-container">
+          <canvas id="chartDurasi"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Frekuensi Penggunaan</h3>
+          <p>Seberapa sering membuka media sosial</p>
+        </div>
+        <div class="chart-container">
+          <canvas id="chartFrekuensi"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: SIKAP & IDENTITAS NASIONAL -->
+    <div class="section-title"><span class="dot"></span> 3. Sikap, Persepsi Budaya, & Identitas Nasional</div>
+    <div class="grid-2">
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-header">
+          <h3>Perbandingan Sikap Terhadap 8 Pernyataan Utama</h3>
+          <p>Persentase respon (Setuju, Biasa Saja, Tidak Setuju) pada aspek nilai, identitas, dan nasionalisme</p>
+        </div>
+        <div class="chart-container large">
+          <canvas id="chartLikert"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <h3>Indeks Penerimaan & Kesepakatan (Net Score)</h3>
+          <p>Tingkat persetujuan responden terhadap tiap aspek indikator</p>
+        </div>
+        <div class="chart-container">
+          <canvas id="chartRadar"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Kluster Jenis Konten Favorit</h3>
+          <p>Topik tontonan yang paling sering diakses responden</p>
+        </div>
+        <div class="content-tags">
+          <div class="tag">Edukasi / Pengetahuan / Tutorial <span class="count">11</span></div>
+          <div class="tag">Vlog / Daily Life / Mukbang <span class="count">10</span></div>
+          <div class="tag">Meme / Komedi / Video Lucu <span class="count">9</span></div>
+          <div class="tag">Anime / Jejepangan / Film <span class="count">6</span></div>
+          <div class="tag">Gaming / Streaming Gameplay <span class="count">4</span></div>
+          <div class="tag">Makeup / Fashion / Skincare <span class="count">3</span></div>
+          <div class="tag">K-Pop / Musik / Dance <span class="count">4</span></div>
+          <div class="tag">Berita / Politik / Isu Terkini <span class="count">3</span></div>
+          <div class="tag">Budaya Lokal / Kesenian <span class="count">2</span></div>
+          <div class="tag">Brainrot / Random / Niche <span class="count">4</span></div>
+        </div>
+        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--surface-card); border-radius: 10px; border: 1px solid var(--border);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;">Insight Kunci:</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
+            • <strong>72.7%</strong> responden memegang teguh <strong>nilai Pancasila</strong> saat bermedia sosial.<br>
+            • <strong>Tiktok & Instagram</strong> mendominasi <strong>79.6%</strong> atensi harian responden.<br>
+            • Walaupun paparan konten luar tinggi, <strong>hanya 13.6%</strong> yang merasa terpengaruh secara negatif terhadap persepsi budaya sendiri, membuktikan ketahanan filter budaya lokal.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: DATA TABEL INTERAKTIF -->
+    <div class="table-section">
+      <div class="table-controls">
+        <div>
+          <h3 style="font-size: 1.1rem; font-weight: 700;">Data Mentah Responden</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Pencarian instan berdasarkan nama, konten, atau platform</p>
+        </div>
+        <input type="text" id="tableSearch" class="search-input" placeholder="Cari data responden..." onkeyup="filterTable()">
+      </div>
+      <div class="table-wrapper">
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Inisial / Nama</th>
+              <th>Usia</th>
+              <th>Status</th>
+              <th>Gender</th>
+              <th>Platform Utama</th>
+              <th>Durasi/Hari</th>
+              <th>Jenis Konten Favorit</th>
+              <th>Pancasila Pedoman</th>
+              <th>Identitas Nasional</th>
+              <th>Gaya Hidup Individualis</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer>
+      Visualisasi Interaktif Data Hasil Kuesioner • Media Sosial dan Identitas Nasional Generasi Muda
+    </footer>
+  </div>
+
+  <script>
+    const rawData = [{"Timestamp": "46293.68889803241", "Nama (panggilan/inisial).": "Cha", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "> 6 jam", "Apa jenis konten yang sering ditonton.": "Konten Edukasi, Konten Keseharian, Berita/Permasalahan Saat Ini.", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.68895872685", "Nama (panggilan/inisial).": "R", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "YouTube", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Youtuber ishowspeed", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46293.703147754626", "Nama (panggilan/inisial).": "R", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "X (Twitter)", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "> 6 jam", "Apa jenis konten yang sering ditonton.": "Jejepangan", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.70406560185", "Nama (panggilan/inisial).": "Egi", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa & pekerja", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Jarang", "Durasi penggunaan media sosial dalam sehari.": "< 1 jam", "Apa jenis konten yang sering ditonton.": "Food vloger", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Tidak setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46293.70677291667", "Nama (panggilan/inisial).": "Vina", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "YouTube", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "Youtube Gaming", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.70701412037", "Nama (panggilan/inisial).": "Noverdo", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "brainrot dan jomok", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Tidak setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.707164583335", "Nama (panggilan/inisial).": "Dimas Pratama", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "> 6 jam", "Apa jenis konten yang sering ditonton.": "Edukasi dan brainrot", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46293.70939592592", "Nama (panggilan/inisial).": "Eris", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Makeup, fashion, memes, idol, skincare, random things", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46293.71575206019", "Nama (panggilan/inisial).": "R", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Daily life/vlog, Komedi & relatable dan edukasi", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.72588172454", "Nama (panggilan/inisial).": "Achrespra", "Usia.": "< 18 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Konten penjelasan teknis film, sama konten membenci Netanyahu", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Tidak setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46293.73667989583", "Nama (panggilan/inisial).": "yosua", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "meme, isu politik, berita nasional/internasional, dan musik.", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.74594915509", "Nama (panggilan/inisial).": "Yess", "Usia.": "> 20 Tahun", "Status.": "Pekerja", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Hiburan", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Tidak setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Tidak setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.74640498843", "Nama (panggilan/inisial).": "Haters", "Usia.": "< 18 Tahun", "Status.": "Ada deh", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Ada deh", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "> 6 jam", "Apa jenis konten yang sering ditonton.": "Gore, thriller,horor, psychopath", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46293.76193303241", "Nama (panggilan/inisial).": "Malik", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "YouTube", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "> 6 jam", "Apa jenis konten yang sering ditonton.": "Meme edukasi hehe", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Tidak setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.77384741898", "Nama (panggilan/inisial).": "ar", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "YouTube", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "streaming game, gameplay, quiz, shorts random", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.77784728009", "Nama (panggilan/inisial).": "adel", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Vidio hiburan", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Tidak setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.778067569445", "Nama (panggilan/inisial).": "Ninda", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "memasak", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Tidak setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.77829037037", "Nama (panggilan/inisial).": "Rahmat Hidayat", "Usia.": "< 18 Tahun", "Status.": "Pekerja", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "Kesenian", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Tidak setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.77884806713", "Nama (panggilan/inisial).": "caww", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "komedi, kartun, dll", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46293.77991556713", "Nama (panggilan/inisial).": "Deci", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Editan anime dan film", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.78152758101", "Nama (panggilan/inisial).": "Clara", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "> 6 jam", "Apa jenis konten yang sering ditonton.": "K-pop dan memasak", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Tidak setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.78330592593", "Nama (panggilan/inisial).": "cekarin", "Usia.": "< 18 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Dance", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Tidak setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.78361233797", "Nama (panggilan/inisial).": "Atii", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "JJ, mini vlog, mukbang, edukasi, dracin", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Tidak setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.784510474536", "Nama (panggilan/inisial).": "F", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "video lucu", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46293.785243969905", "Nama (panggilan/inisial).": "cun", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "WA", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "> 6 jam", "Apa jenis konten yang sering ditonton.": "a day in my life", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Tidak setuju", "Saya lebih bebas berekspresi di media sosial.": "Tidak setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.795269525464", "Nama (panggilan/inisial).": "J", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Edukasi matematika dari cara pengerjaan, pembahasan, sampai tips belajar, akun yang paling sering lewat itu jerome polin😁🙏", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Tidak setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46293.79973159722", "Nama (panggilan/inisial).": "Windy", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "> 6 jam", "Apa jenis konten yang sering ditonton.": "Vlog", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.82385375", "Nama (panggilan/inisial).": "Tiqa", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "konten tren", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46293.83644914352", "Nama (panggilan/inisial).": "Bila", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Daily life, motivation, konten yang membangun.", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Tidak setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.85158469908", "Nama (panggilan/inisial).": "Syifa", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "Edukasi dan traveling", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Tidak setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.852253206016", "Nama (panggilan/inisial).": "RP", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "tentang budaya lokal yang ada di kalteng dan kerajinan", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.889239826385", "Nama (panggilan/inisial).": "yoga", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "random", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.91001633102", "Nama (panggilan/inisial).": "Nadya Safira", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "Anime dan Musik", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.969148425924", "Nama (panggilan/inisial).": "nia", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "idol, trend tiktok", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46293.98094983796", "Nama (panggilan/inisial).": "Marcel", "Usia.": "< 18 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Anime", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Tidak setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}, {"Timestamp": "46294.22241162037", "Nama (panggilan/inisial).": "Putri", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "Hiburan", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46294.44896982639", "Nama (panggilan/inisial).": "Dofira Hilda Ma’wa", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "konten hiburan dan lifestyle", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46294.56710451389", "Nama (panggilan/inisial).": "Amelia", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "YouTube", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "Wiliam and Ben", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Tidak setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46294.72106678241", "Nama (panggilan/inisial).": "Chindy", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Mukbang", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46294.737551412036", "Nama (panggilan/inisial).": "Z", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "YouTube", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "Podcast", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Biasa saja", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46294.75937803241", "Nama (panggilan/inisial).": "Fc", "Usia.": "18-20 Tahun", "Status.": "Mahasiswa", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "Video konyol", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Tidak setuju", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Tidak setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Tidak setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46295.84797711806", "Nama (panggilan/inisial).": "c", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sering", "Durasi penggunaan media sosial dalam sehari.": "1-3 jam", "Apa jenis konten yang sering ditonton.": "tren tik tok", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Setuju", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46295.84848908565", "Nama (panggilan/inisial).": "naila teman bila", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Perempuan", "Jenis media sosial yang paling sering digunakan.": "Instagram", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "Tutorial Makeup, Rekomendasi Skincare, dll", "Media sosial sangat penting bagi saya.": "Setuju", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Setuju", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Tidak setuju", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Setuju", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Setuju", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Setuju"}, {"Timestamp": "46295.88529534722", "Nama (panggilan/inisial).": "Erik", "Usia.": "< 18 Tahun", "Status.": "Pelajar", "Jenis Kelamin.": "Laki", "Jenis media sosial yang paling sering digunakan.": "Tiktok", "Seberapa sering menggunakan media sosial.": "Sangat sering", "Durasi penggunaan media sosial dalam sehari.": "4-6 jam", "Apa jenis konten yang sering ditonton.": "Vollyball", "Media sosial sangat penting bagi saya.": "Biasa saja", "Saya percaya diri menunjukkan identitas nasional di media sosial.": "Biasa saja", "Saya lebih bebas berekspresi di media sosial.": "Biasa saja", "Paparan konten budaya luar mempengaruhi persepsi saya terhadap budaya sendiri.": "Biasa saja", "Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.": "Setuju", "Saya aktif membagikan konten tentang kebudayaan sendiri.": "Biasa saja", "Media sosial menjadi penentu untuk menentukan rasa nasionalisme saya meningkat atau menurun.": "Biasa saja", "Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.": "Biasa saja"}];
+
+    // Global Chart Defaults
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+    Chart.defaults.plugins.tooltip.padding = 10;
+    Chart.defaults.plugins.tooltip.cornerRadius = 8;
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+    Chart.defaults.plugins.legend.labels.boxWidth = 8;
+
+    // 1. Chart Usia
+    new Chart(document.getElementById('chartUsia'), {
+      type: 'doughnut',
+      data: {
+        labels: ['18-20 Tahun', '< 18 Tahun', '> 20 Tahun'],
+        datasets: [{
+          data: [27, 16, 1],
+          backgroundColor: ['#8b5cf6', '#3b82f6', '#06b6d4'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+
+    // 2. Chart Gender
+    new Chart(document.getElementById('chartGender'), {
+      type: 'pie',
+      data: {
+        labels: ['Perempuan (68.2%)', 'Laki-laki (31.8%)'],
+        datasets: [{
+          data: [30, 14],
+          backgroundColor: ['#ec4899', '#3b82f6'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+
+    // 3. Chart Status
+    new Chart(document.getElementById('chartStatus'), {
+      type: 'bar',
+      data: {
+        labels: ['Mahasiswa', 'Pelajar', 'Pekerja', 'Mahasiswa & Pekerja', 'Lainnya'],
+        datasets: [{
+          label: 'Jumlah Responden',
+          data: [29, 11, 2, 1, 1],
+          backgroundColor: '#3b82f6',
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+          x: { grid: { display: false } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    // 4. Chart Platform
+    new Chart(document.getElementById('chartPlatform'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Tiktok (43.2%)', 'Instagram (36.4%)', 'YouTube (13.6%)', 'X / Twitter (2.3%)', 'WhatsApp (2.3%)', 'Lainnya (2.3%)'],
+        datasets: [{
+          data: [19, 16, 6, 1, 1, 1],
+          backgroundColor: ['#06b6d4', '#ec4899', '#ef4444', '#1e293b', '#10b981', '#64748b'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    // 5. Chart Durasi
+    new Chart(document.getElementById('chartDurasi'), {
+      type: 'bar',
+      data: {
+        labels: ['< 1 jam', '1-3 jam', '4-6 jam', '> 6 jam'],
+        datasets: [{
+          label: 'Jumlah Responden',
+          data: [1, 18, 17, 8],
+          backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+          x: { grid: { display: false } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    // 6. Chart Frekuensi
+    new Chart(document.getElementById('chartFrekuensi'), {
+      type: 'pie',
+      data: {
+        labels: ['Sangat Sering (52.3%)', 'Sering (45.5%)', 'Jarang (2.3%)'],
+        datasets: [{
+          data: [23, 20, 1],
+          backgroundColor: ['#ef4444', '#f59e0b', '#64748b'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    // 7. Likert Statements (Stacked Horizontal Bar)
+    const statements = [
+      'Penerapan Nilai Pancasila',
+      'Pentingnya Medsos Bagi Diri',
+      'Percaya Diri Tampil Identitas Nasional',
+      'Kebebasan Berekspresi',
+      'Medsos Mengajarkan Individualis',
+      'Pengaruh Budaya Luar ke Budaya Sendiri',
+      'Aktif Bagikan Konten Budaya Lokal',
+      'Medsos Penentu Naik/Turun Nasionalisme'
+    ];
+
+    // Data urut: [Pancasila, Urgensi, Pede Identitas, Bebas Ekspresi, Individualis, Budaya Luar, Bagikan Budaya, Penentu Nasionalisme]
+    const setujuCounts = [32, 29, 20, 19, 17, 11, 11, 12];
+    const biasaCounts = [12, 15, 19, 24, 18, 27, 22, 15];
+    const tidakCounts = [0, 0, 5, 1, 9, 6, 11, 17];
+
+    new Chart(document.getElementById('chartLikert'), {
+      type: 'bar',
+      data: {
+        labels: statements,
+        datasets: [
+          {
+            label: 'Setuju',
+            data: setujuCounts,
+            backgroundColor: '#10b981',
+            borderRadius: 4
+          },
+          {
+            label: 'Biasa Saja',
+            data: biasaCounts,
+            backgroundColor: '#f59e0b',
+            borderRadius: 4
+          },
+          {
+            label: 'Tidak Setuju',
+            data: tidakCounts,
+            backgroundColor: '#ef4444',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            stacked: true,
+            max: 44,
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            title: { display: true, text: 'Jumlah Responden (Total 44)' }
+          },
+          y: {
+            stacked: true,
+            grid: { display: false }
+          }
+        },
+        plugins: {
+          legend: { position: 'top' }
+        }
+      }
+    });
+
+    // 8. Radar Chart
+    new Chart(document.getElementById('chartRadar'), {
+      type: 'radar',
+      data: {
+        labels: [
+          'Pedoman Pancasila',
+          'Kepentingan Medsos',
+          'Pede Identitas Nasional',
+          'Kebebasan Ekspresi',
+          'Kritik Individualisme',
+          'Ketahanan Budaya Luar',
+          'Promosi Budaya Lokal',
+          'Efek ke Nasionalisme'
+        ],
+        datasets: [{
+          label: '% Responden Setuju',
+          data: [
+            (32/44*100).toFixed(1),
+            (29/44*100).toFixed(1),
+            (20/44*100).toFixed(1),
+            (19/44*100).toFixed(1),
+            (17/44*100).toFixed(1),
+            (11/44*100).toFixed(1),
+            (11/44*100).toFixed(1),
+            (12/44*100).toFixed(1)
+          ],
+          fill: true,
+          backgroundColor: 'rgba(59, 130, 246, 0.25)',
+          borderColor: '#3b82f6',
+          pointBackgroundColor: '#60a5fa',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#3b82f6'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            angleLines: { color: 'rgba(255,255,255,0.1)' },
+            grid: { color: 'rgba(255,255,255,0.08)' },
+            pointLabels: { color: '#cbd5e1', font: { size: 11 } },
+            ticks: { display: false }
+          }
+        }
+      }
+    });
+
+    // Populate Table
+    const tbody = document.getElementById('tableBody');
+    function renderTable(dataToRender) {
+      tbody.innerHTML = '';
+      dataToRender.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        
+        const getBadge = (val) => {
+          if (val === 'Setuju') return `<span class="badge-status badge-setuju">Setuju</span>`;
+          if (val === 'Biasa saja') return `<span class="badge-status badge-biasa">Biasa saja</span>`;
+          if (val === 'Tidak setuju') return `<span class="badge-status badge-tidak">Tidak setuju</span>`;
+          return val || '-';
+        };
+
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td style="font-weight: 600; color: #fff;">${item['Nama (panggilan/inisial).'] || '-'}</td>
+          <td>${item['Usia.'] || '-'}</td>
+          <td>${item['Status.'] || '-'}</td>
+          <td>${item['Jenis Kelamin.'] || '-'}</td>
+          <td>${item['Jenis media sosial yang paling sering digunakan.'] || '-'}</td>
+          <td>${item['Durasi penggunaan media sosial dalam sehari.'] || '-'}</td>
+          <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item['Apa jenis konten yang sering ditonton.']}">${item['Apa jenis konten yang sering ditonton.'] || '-'}</td>
+          <td>${getBadge(item['Saya menerapkan nilai pancasila sebagai pedoman dalam bermedia sosial.'])}</td>
+          <td>${getBadge(item['Saya percaya diri menunjukkan identitas nasional di media sosial.'])}</td>
+          <td>${getBadge(item['Konten media sosial saat ini lebih banyak mengajarkan gaya hidup individualis daripada nilai gotong royong.'])}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    renderTable(rawData);
+
+    function filterTable() {
+      const query = document.getElementById('tableSearch').value.toLowerCase();
+      const filtered = rawData.filter(d => {
+        return Object.values(d).some(v => String(v).toLowerCase().includes(query));
+      });
+      renderTable(filtered);
+    }
+  </script>
+</body>
+</html>
